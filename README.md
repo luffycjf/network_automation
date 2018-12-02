@@ -7,15 +7,18 @@ An ansible-based, multi-vendor network device configuration automatically genera
 git clone https://github.com/luffycjf/network_automation
 ```
 **安装ansible和模块**<br/>
+
+```javascript
 yum -y install ansible<br/>
 sed -i "s/#library/library/g" /etc/ansible/ansible.cfg<br/>
 mkdir -p /usr/share/my_modules/<br/>
 cd network_automation<br/>
 cp module/ssh_command.py /usr/share/my_modules/ <br/>
+```
 如果已经安装了ansible，直接把module文件夹下的ssh_command.py放到ansible配置的模块目录下即可。<br/>
 
 **使用**<br/>
-目录下主文件network_automation.yml就是一个playbook，其中的含义[博客](jeffrycheng.com)上面都有说，两个task分别是生成配置文件和下发配置用的，写了一些配置模版和变量分别放在templates和vars文件夹中，目前时间和精力原因只更新了部分基础配置，不涉及interface和路由部分，后续会补充完整，有兴趣的也可以自己来写更多的。<br/>
+目录下主文件network_automation.yml就是一个playbook，其中的含义[博客](https://jeffrycheng.com)上面都有说，两个task分别是生成配置文件和下发配置用的，写了一些配置模版和变量分别放在templates和vars文件夹中，目前时间和精力原因只更新了部分基础配置，不涉及interface和路由部分，后续会补充完整，有兴趣的也可以自己来写更多的。<br/>
 
 调用ansible-playbook network_automation.yml即可使用<br/>
 
