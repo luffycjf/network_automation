@@ -1,0 +1,5 @@
+ystem-view
+info-center logbuffer size 1024
+info-center loghost source MEth0/0/0
+info-center loghost vpn-instance mgt 1.1.1.1 facility level3
+info-center loghost  2.2.2.2 facility level3

@@ -1,0 +1,7 @@
+configure terminal
+{% for vrf in vrfs %}
+{% if vrf.name  %}
+vrf context {{ vrf.name }}
+{% endif %}
+{% endfor %}
+end

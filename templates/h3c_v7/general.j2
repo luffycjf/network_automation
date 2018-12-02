@@ -1,0 +1,11 @@
+system-view
+{% if timezone %}
+sysname {{ hostname }}
+{% endif %}
+{% if timezone %}
+clock timezone {{ timezone }} add 08:00:00
+{% endif %}
+{% if login_banner %}
+header login %{{ login_banner }}%
+{% endif %}
+return

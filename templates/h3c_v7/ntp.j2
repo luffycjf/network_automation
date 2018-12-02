@@ -1,0 +1,9 @@
+system-view
+{% if ntp.server and ntp.vrf %}
+ntp-service enable
+ntp-service unicast-server {{ ntp.server }} {%if ntp.vrf %}vpn-instance {{ ntp.vrf }}{% endif %}
+{% endif %}
+{% if ntp.source_interface %}
+ntp-service source {{ ntp.source_interface }}
+{% endif %}
+return

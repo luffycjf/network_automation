@@ -1,0 +1,11 @@
+configure terminal
+{% if hostname %}
+hostname {{ hostname }}
+{% endif %}
+{% if timezone %}
+clock timezone {{ timezone }} 8 0
+{% endif %}
+{% if login_banner %}
+banner motd &{{ login_banner }}&
+{% endif %}
+end

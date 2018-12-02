@@ -1,0 +1,16 @@
+logging:
+  severity: informational
+  source_interface: MEth0/0/0
+  buffersize: 1024
+  remote_servers:
+    - 
+      address: 1.1.1.1
+      vrf: mgt
+      severity:
+      facility: level3
+
+    - 
+      address: 2.2.2.2
+      vrf:
+      severity:
+      facility: level3

@@ -1,0 +1,12 @@
+system-view
+{% if logging.buffersize %}
+info-center logbuffer size {{ logging.buffersize }}
+{% endif %}
+{% if logging.source_interface %}
+info-center loghost source {{ logging.source_interface }}
+{% endif %}
+{% for logging_remote_server in logging.remote_servers %}
+{% if logging_remote_server.address and logging_remote_server.facility %}
+info-center loghost {% if logging_remote_server.vrf %}vpn-instance {{ logging_remote_server.vrf }}{% endif %} {{ logging_remote_server.address }} facility {{ logging_remote_server.facility }}
+{% endif %}
+{% endfor %}

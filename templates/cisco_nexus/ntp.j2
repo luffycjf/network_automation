@@ -1,0 +1,8 @@
+configure terminal
+{% if ntp.server %}
+ntp server {{ ntp.server }} {% if ntp.vrf %}use-vrf {{ ntp.vrf }}{% endif %}
+{% endif %}
+{% if ntp.source_interface %}
+ntp source-interface {{ ntp.source_interface }}
+{% endif %}
+end

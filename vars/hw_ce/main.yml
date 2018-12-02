@@ -1,0 +1,9 @@
+snmp:
+  community: test
+  acl:
+  version: 2c
+  servers:
+    -
+      address: 1.1.1.1
+      key: test
+      vrf:

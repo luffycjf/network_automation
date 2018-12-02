@@ -1,0 +1,4 @@
+ntp:
+  source_interface: MEth0/0/0
+  vrf: mgt
+  server: 1.1.1.1

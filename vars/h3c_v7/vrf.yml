@@ -1,0 +1,21 @@
+vrfs:
+  - 
+    name: mgt1
+    description: 
+    ipv4_enable: enable
+    ipv4_route_distinguisher: "2:10"
+    ipv4_import_route_targets:
+      - "1:100"
+      - "2:200"
+    ipv4_export_route_targets:
+      - "1:100"
+      - "2:200"
+  - 
+    name: TEST1
+    description: 
+    ipv4_enable: enable
+    ipv4_route_distinguisher: "1:10"
+    ipv4_import_route_targets: 
+      - "1:100"
+    ipv4_export_route_targets: 
+      - "1:200"

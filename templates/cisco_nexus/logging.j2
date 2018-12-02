@@ -1,0 +1,11 @@
+configure terminal
+{% for logging_remote_server in logging.remote_servers %}
+{% if logging_remote_server.address %}
+logging server {{ logging_remote_server.address }}{% if logging_remote_server.severity %} {{ logging_remote_server.severity }}{% endif %}{% if logging_remote_server.vrf %} use-vrf {{ logging_remote_server.vrf }}{% endif %}{% if logging_remote_server.facility %} facility {{ logging_remote_server.facility }}{% endif %}
+
+{% endif %}
+{% endfor %}
+{% if logging.source_interface %}
+logging source-interface {{ logging.source_interface }}
+{% endif %}
+end

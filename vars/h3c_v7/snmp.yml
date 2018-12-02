@@ -1,0 +1,10 @@
+snmp:
+  community: test123
+  acl:
+  type: read
+  version: v2c
+  servers:
+    -
+      address: 1.1.1.1
+      key: test123
+      vrf:

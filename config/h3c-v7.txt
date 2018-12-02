@@ -1,0 +1,4 @@
+system-view
+ntp-service enable
+ntp-service unicast-server 1.1.1.1 vpn-instance mgtntp-service source MEth0/0/0
+return

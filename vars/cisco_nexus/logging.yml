@@ -1,0 +1,16 @@
+logging:
+  severity: informational
+  source_interface: mgmt0
+  buffersize: 
+  remote_servers:
+    - 
+      address: 1.1.1.1
+      vrf: management
+      severity: 6
+      facility: local1
+
+    - 
+      address: 2.2.2.2
+      vrf:
+      severity:
+      facility: 

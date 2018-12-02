@@ -1,0 +1,10 @@
+system-view immediately
+{% if ntp.source_interface %}
+ntp source-interface {{ ntp.source_interface }}{% if ntp.vrf %} vpn-instance {{ ntp.vrf }}{% endif %}
+{% endif %}
+
+{% if ntp.server %}
+ntp unicast-server {{ ntp.server }}{% if ntp.vrf %} vpn-instance {{ ntp.vrf }}{% endif %}
+{% endif %}
+
+return

@@ -1,0 +1,16 @@
+system-view
+{% if snmp.community and snmp.type and snmp.acl%}
+snmp-agent community {{ snmp.type }} {{ snmp.community }} acl {{ snmp.acl }}
+{% if snmp.community and snmp.type and not snmp.acl%}
+snmp-agent community {{ snmp.type }} {{ snmp.community }}
+{% endif %}
+{% if snmp.version %}
+undo snmp-agent sys-info version v3
+snmp-agent sys-info version {{ snmp.version }}
+{% endif %}
+{% for snmp_server in snmp.servers %}
+{% if snmp_server.address %}
+snmp-agent target-host trap address udp-domain {{ snmp_server.address }} {% if snmp_server.vrf %}vpn-instance {{ snmp_server.vrf }}{% endif %} {% if snmp_server.key %}params securityname {{ snmp_server.key }}{% endif %} {{ snmp.version }}
+{% endif %}
+{% endfor %}
+return

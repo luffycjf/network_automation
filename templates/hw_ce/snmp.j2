@@ -1,0 +1,15 @@
+system-view immediately
+{% if snmp.community and snmp.type %}
+snmp-agent community {{ snmp.type }} cipher {{ snmp.community }} mib-view iso-view {% if snmp.acl %}acl {{ snmp.acl }}{% endif %}
+{% endif %}
+{% if snmp.version %}
+snmp-agent mib-view included iso-view iso
+snmp-agent sys-info version v3 disable
+snmp-agent sys-info version {{ snmp.version }}
+{% endif %}
+{% for snmp_server in snmp.servers %}
+{% if snmp_server.address %}
+snmp-agent target-host trap address udp-domain {{ snmp_server.address }}{% if snmp_server.vrf %} vpn-instance {{ snmp_server.vrf }}{% endif %}{% if snmp_server.key %} params securityname cipher {{ snmp_server.key }}{% endif %} {{ snmp.version }}
+{% endif %}
+{% endfor %}
+return

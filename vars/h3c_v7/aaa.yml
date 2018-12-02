@@ -1,0 +1,20 @@
+server_groups:
+  - name: test_scheme
+    address: 
+      - 1.1.1.1
+      - 2.2.2.2
+    key:
+      - testkey
+      - testkey
+    vrf: 
+      - mgt
+      - mgt
+
+users:
+  -
+    username: TEST
+    password: TEST
+
+authentication_scheme: TEST_SCHEME
+authorization_scheme: TEST_SCHEME
+accounting_scheme: TEST_SCHEME

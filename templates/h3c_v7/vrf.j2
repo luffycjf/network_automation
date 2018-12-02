@@ -1,0 +1,26 @@
+system-view
+{% for vrf in vrfs %}
+{% if vrf.name  %}
+ip vpn-instance {{ vrf.name }}
+{% endif %}
+{% if vrf.description %}
+description {{ vrf.description }}
+{% endif %}
+{% if vrf.ipv4_route_distinguisher %}
+route-distinguisher {{ vrf.ipv4_route_distinguisher }}
+{% endif %}
+{% if vrf.ipv4_enable  %}
+address-family ipv4
+{% endif %}
+{% for ipv4_import_route_target in vrf.ipv4_import_route_targets %}
+{% if ipv4_import_route_target %}
+vpn-target {{ ipv4_import_route_target }} import-extcommunity
+{% endif %}
+{% endfor %}
+{% for ipv4_export_route_target in vrf.ipv4_export_route_targets %}
+{% if ipv4_export_route_target %}
+vpn-target {{ ipv4_export_route_target }} export-extcommunity
+{% endif %}
+{% endfor %}
+{% endfor %}
+return

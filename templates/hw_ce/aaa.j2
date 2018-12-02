@@ -1,0 +1,54 @@
+system-view immediately
+{% for server_group in server_groups%}
+{% if server_group.name %}
+hwtacacs server template {{ server_group.name }}
+hwtacacs server user-name domain-excluded
+{% endif %}
+{% if server_group.address[0] %}
+hwtacacs server authentication {{ server_group.address[0] }}{% if server_group.vrf[0] %}vpn-instance {{ server_group.vrf[0] }}{% endif %}{% if server_group.key[0] %} shared-key cipher {{ server_group.key[0] }}{% endif %}
+{% endif %}
+
+{% if server_group.address[1] %}
+hwtacacs server authentication {{ server_group.address[1] }}{% if server_group.vrf[1] %}vpn-instance {{ server_group.vrf[1] }}{% endif %}{% if server_group.key[1] %} shared-key cipher {{ server_group.key[1] }}{% endif %} secondary
+{% endif %}
+
+{% if server_group.address[0] %}
+hwtacacs server authorization {{ server_group.address[0] }}{% if server_group.vrf[0] %}vpn-instance {{ server_group.vrf[0] }}{% endif %}{% if server_group.key[0] %} shared-key cipher {{ server_group.key[0] }}{% endif %}
+{% endif %}
+
+{% if server_group.address[1] %}
+hwtacacs server authorization {{ server_group.address[1] }}{% if server_group.vrf[1] %}vpn-instance {{ server_group.vrf[1] }}{% endif %}{% if server_group.key[1] %} shared-key cipher {{ server_group.key[1] }}{% endif %} secondary
+{% endif %}
+
+{% if server_group.address[0] %}
+hwtacacs server accounting {{ server_group.address[0] }}{% if server_group.vrf[0] %}vpn-instance {{ server_group.vrf[0] }}{% endif %}{% if server_group.key[0] %} shared-key cipher {{ server_group.key[0] }}{% endif %}
+{% endif %}
+
+{% if server_group.address[1] %}
+hwtacacs server accounting {{ server_group.address[1] }}{% if server_group.vrf[1] %}vpn-instance {{ server_group.vrf[1] }}{% endif %}{% if server_group.key[1] %} shared-key cipher {{ server_group.key[1] }}{% endif %} secondary
+{% endif %}
+
+{% endfor %}
+#
+{% for user in users %}
+{% if user.username and user.password %}
+aaa
+local-user {{ user.username }} password {{ user.password }}
+local-user {{ user.username }} service-type ftp terminal telnet ssh
+{% endif %}
+{% endfor %}
+#
+{% if authentication_scheme or authorization_scheme  or accounting_scheme%}
+aaa
+{% endif %}
+{% if authentication_scheme %}
+authentication-scheme {{ authentication_scheme }}
+{% endif %}
+{% if authorization_scheme %}
+authorization-scheme {{ authorization_scheme }}
+{% endif %}
+{% if accounting_scheme %}
+accounting-scheme {{ accounting_scheme }}
+{% endif %}
+#
+return

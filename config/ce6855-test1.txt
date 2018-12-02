@@ -1,0 +1,15 @@
+system-view immediately
+ip vpn-instance mgt1
+ipv4-family
+route-distinguisher 2:10
+vpn-target 1:100 import-extcommunity
+vpn-target 2:200 import-extcommunity
+vpn-target 1:100 export-extcommunity
+vpn-target 2:200 export-extcommunity
+ip vpn-instance TEST1
+ipv4-family
+route-distinguisher 1:10
+vpn-target 1:100 import-extcommunity
+vpn-target 1:200 export-extcommunity
+return
+

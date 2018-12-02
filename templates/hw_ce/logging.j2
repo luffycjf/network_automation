@@ -1,0 +1,16 @@
+system-view immediately
+{% if logging.severity %}
+info-center source default channel 2 trap level {{ logging.severity }}
+{% endif %}
+{% if logging.source_interface %}
+info-center loghost source {{ logging.source_interface }}
+{% endif %}
+{% for logging_remote_server in logging.remote_servers %}
+{% if logging_remote_server.address %}
+info-center loghost {{ logging_remote_server.address }}{% if logging_remote_server.vrf %} vpn-instance {{ logging_remote_server.vrf }}{% endif %}{% if logging_remote_server.facility %} facility {{ logging_remote_server.facility }}{% endif %} local-time
+{% endif %}
+{% endfor %}
+{% if logging.buffersize %}
+info-center logbuffer size {{ logging.buffersize }}
+{% endif %}
+return
