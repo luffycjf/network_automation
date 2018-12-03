@@ -134,7 +134,7 @@ stdmore = re.compile(r"-[\S\s]*[Mm]ore[\S\s]*-")
 general_endcondition = re.compile(r"\S+[#>\]]\s*[\n\r]")
 hw_endcondition = re.compile(r"\S+[>\]]\s*[\n\r]")
 cisco_endcondition = re.compile(r"\S+#\s*[\n\r]")
-juniper_endcondition = re.compile(r"\S+[#\]]\s*[\n\r]")
+juniper_endcondition = re.compile(r"\S+[#>]\s*[\n\r]")
 
 
 try:
