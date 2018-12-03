@@ -172,7 +172,7 @@ class ssh_comm(object):
 	    self.shell.send(stdconfirm+'\n')
 	self.shell.send('\n')
 	while True:
-	    if stdmore.findall(output):
+	    if stdmore.findall(output.split('\n')[-1]):
 		break
 	    elif condition.findall(output):
 		output = '\r\n'.join(output.split('\n')[1:-2])
