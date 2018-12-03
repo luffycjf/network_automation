@@ -1,0 +1,5 @@
+system-view
+sysname h3c-test1
+clock timezone BeiJing add 08:00:00
+header login %HELLO ONEPIECE%
+return

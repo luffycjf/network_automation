@@ -48,6 +48,16 @@ options:
       - the device's vendor(HUAWEI,CISCO,JUNIPER,GENERAL)
     required: False
     default: GENERAL
+  stdjudge:
+    description:
+      - the output need confirm ,like [Y/N]
+    required: False
+    default: ''
+  stdconfirm:
+    description:
+      - the confirm command,like Y
+    required: False
+    default: ''
 author:
     - "jeffrycheng"
 '''
@@ -64,6 +74,8 @@ EXAMPLES = """
     address: "192.168.157.132"
     command_interval: 0.5
     vendor: GENERAL
+    stdjudge: "Y/N"
+    stdconfirm: "Y"
 
   tasks:
     - name: set ntp
@@ -74,19 +86,23 @@ EXAMPLES = """
         password: "{{ password }}"
         command_interval: "{{ command_interval }}"
 	vendor: {{ vendor }}
+	stdjudge: {{ stdjudge }}
+        stdconfirm: {{ stdconfirm }}
         command: ''
-        configfile: /root/ansible/switch/cfg/ntp.txt
+        configfile: ntp.txt
 
     - name: display version
       ssh_command:
-        port: 22
-        address: 192.168.1.1
-        username: test
-        password: test123
-        command_interval: 0.1
-        vendor: HUAWEI
-        command: 'display version'
-        configfile: ''
+	port: 22
+	address: 192.168.1.1
+	username: test
+	password: test123
+	command_interval: 0.1
+	vendor: HUAWEI
+	stdjudge: "Y/N"
+	stdconfirm: "Y"
+	command: 'display version\nsave'
+	configfile: ''
 """
 
 RETUN = """
@@ -138,33 +154,39 @@ class ssh_comm(object):
             if self.shell.recv_ready() or self.shell.recv_stderr_ready():
                 break
         self.shell.recv('')
-    def recv_all(self,interval,condition_type='GENERAL'):
+    def recv_all(self,interval,condition_type,stdjudge,stdconfirm):
 	if condition_type == 'HUAWEI':
-	    condition = hw_endconditio
+	    condition = hw_endcondition
 	elif condition_type == 'CISCO':
 	    condition = cisco_endcondition
 	elif condition_type == 'JUNIPER':
 	    condition = juniper_endcondition
 	else:
 	    condition = general_endcondition
-	output = ''
+	while True:
+	    time.sleep(interval)
+	    if self.shell.recv_ready() or self.shell.recv_stderr_ready():
+		break
+	output = self.shell.recv(4096)
+	if (stdjudge != '') and (stdjudge in output):
+	    self.shell.send(stdconfirm+'\n')
 	self.shell.send('\n')
 	while True:
-	    while True:
-		time.sleep(interval)
-		if self.shell.recv_ready() or self.shell.recv_stderr_ready():
-		    break
-	    output += self.shell.recv(4096)
 	    if stdmore.findall(output):
 		break
 	    elif condition.findall(output):
 		output = '\r\n'.join(output.split('\n')[1:-2])
 		break
+	    while True:
+		time.sleep(interval)
+		if self.shell.recv_ready() or self.shell.recv_stderr_ready():
+		    break
+	    output += self.shell.recv(4096)
 	return output
-    def send_command(self,command_interval,command,endcondition):
+    def send_command(self,command_interval,command,endcondition,stdjudge,stdconfirm):
         command += "\n"
         self.shell.send(command)
-        stdout = self.recv_all(command_interval)
+        stdout = self.recv_all(interval=command_interval,condition_type=endcondition,stdjudge=stdjudge,stdconfirm=stdconfirm)
         data = stdout.split('\n')
         while stdmore.findall(data[-1]):
             self.shell.send(" ")
@@ -172,19 +194,19 @@ class ssh_comm(object):
                 time.sleep(command_interval)
                 if self.shell.recv_ready() or self.shell.recv_stderr_ready():
                     break
-            tmp = self.recv_all(interval=command_interval,condition_type=endcondition)
+            tmp = self.recv_all(interval=command_interval,condition_type=endcondition,stdjudge=stdjudge,stdconfirm=stdconfirm)
             data = tmp.split('\n')
             stdout += tmp
         return stdout
     def close(self):
 	if self.client is not None:
 	    self.client.close()
-    def run(self,cmds,command_interval,endcondition):
+    def run(self,cmds,command_interval,endcondition,stdjudge,stdconfirm):
 	stderr = ['^','ERROR','Error','error','invalid','Invalid','Ambiguous','ambiguous']
         stdout = ''
         rc = 0
         for cmd in cmds.split('\n'):
-            stdout += self.send_command(command=cmd,command_interval=command_interval,endcondition=endcondition)
+            stdout += self.send_command(command=cmd,command_interval=command_interval,endcondition=endcondition,stdjudge=stdjudge,stdconfirm=stdconfirm)
         for err in stderr:
             if err in stdout:
 		rc = 1
@@ -201,7 +223,9 @@ def main():
     username=dict(required=True, type='str'),
     password=dict(required=True, type='str', no_log=True),
     command_interval=dict(required=False, type='float',default=0.5),
-    vendor=dict(required=False, type='str',default='general')),
+    vendor=dict(required=False, type='str',default='general'),
+    stdjudge=dict(required=False, type='str',default=''),
+    stdconfirm=dict(required=False, type='str',default='')),
     supports_check_mode=True)
     command = to_bytes(module.params['command'], errors='surrogate_or_strict')
     configfile = to_bytes(module.params['configfile'], errors='surrogate_or_strict')
@@ -210,6 +234,8 @@ def main():
     password = to_bytes(module.params['password'], errors='surrogate_or_strict')
     command_interval = to_bytes(module.params['command_interval'], errors='surrogate_or_strict')
     vendor = to_bytes(module.params['vendor'], errors='surrogate_or_strict')
+    stdjudge = to_bytes(module.params['stdjudge'], errors='surrogate_or_strict')
+    stdconfirm = to_bytes(module.params['stdconfirm'], errors='surrogate_or_strict')
     result = {'changed': False}
     if configfile != '':
         try:
@@ -223,7 +249,7 @@ def main():
     except Exception as e:
         raise AnsibleConnectionFailure(str(e))
     try:
-        rc,stdout = connection.run(cmds=command,command_interval=float(command_interval),endcondition=vendor.upper())
+        rc,stdout = connection.run(cmds=command,command_interval=float(command_interval),endcondition=vendor.upper(),stdjudge=stdjudge,stdconfirm=stdconfirm)
     except Exception as e:
         raise AnsibleError('Exec command error.\n' + str(e))
 
