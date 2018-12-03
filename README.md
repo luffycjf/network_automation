@@ -26,14 +26,16 @@ cp module/ssh_command.py /usr/share/my_modules/ <br/>
 ---
 - name: gengerate configuration
   hosts: localhost
-  vars: 
+  vars:
     model: h3c_v7
-    module: ntp
+    module: general
     port: 22
     username: "test"
     password: "test"
     command_interval: 0.5
     vendor: GENERAL
+    stdjudge: "Y/N"
+    stdconfirm: "Y"
 
   vars_files:
     - "vars/{{ model }}/{{ module }}.yml"
@@ -44,7 +46,7 @@ cp module/ssh_command.py /usr/share/my_modules/ <br/>
         src: "templates/{{ model }}/{{ module }}.j2"
         dest: "config/{{ item.hostname }}.txt"
       with_items:
-        - { hostname: 'h3c-v7'}
+        - { hostname: 'h3c-test1'}
 
     - name: config device
       ssh_command:
@@ -53,10 +55,12 @@ cp module/ssh_command.py /usr/share/my_modules/ <br/>
         password: "{{ password }}"
         address: "{{ item.mgtip }}"
         command_interval: "{{ command_interval }}"
+        stdjudge: "Y/N"
+        stdconfirm: "Y"
         command: ''
         configfile: "config/{{ item.hostname }}.txt"
       with_items:
-        - { hostname: 'h3c-v7', mgtip: '1.1.1.1' }
+        - { hostname: 'h3c-test1', mgtip: '1.1.1.1' }
 ```
 
 
