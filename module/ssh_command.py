@@ -190,10 +190,6 @@ class ssh_comm(object):
         data = stdout.split('\n')
         while stdmore.findall(data[-1]):
             self.shell.send(" ")
-            while True:
-                time.sleep(command_interval)
-                if self.shell.recv_ready() or self.shell.recv_stderr_ready():
-                    break
             tmp = self.recv_all(interval=command_interval,condition_type=endcondition,stdjudge=stdjudge,stdconfirm=stdconfirm)
             data = tmp.split('\n')
             stdout += tmp

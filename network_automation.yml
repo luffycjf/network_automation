@@ -5,8 +5,8 @@
     model: h3c_v7
     module: general
     port: 22
-    username: "test"
-    password: "test"
+    username: "root"
+    password: "BZMmk9r8LpfMTlgl"
     command_interval: 0.5
     vendor: GENERAL
     stdjudge: "Y/N"
@@ -35,5 +35,5 @@
         command: ''
         configfile: "config/{{ item.hostname }}.txt"
       with_items:
-        - { hostname: 'h3c-test1', mgtip: '1.1.1.1' }
+        - { hostname: 'h3c-test1', mgtip: '119.28.225.12' }
 
