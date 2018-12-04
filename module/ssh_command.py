@@ -202,7 +202,8 @@ class ssh_comm(object):
         stdout = ''
         rc = 0
         for cmd in cmds.split('\n'):
-            stdout += self.send_command(command=cmd,command_interval=command_interval,endcondition=endcondition,stdjudge=stdjudge,stdconfirm=stdconfirm)
+	    if cmd.strip():
+		stdout += self.send_command(command=cmd,command_interval=command_interval,endcondition=endcondition,stdjudge=stdjudge,stdconfirm=stdconfirm)
         for err in stderr:
             if err in stdout:
 		rc = 1
