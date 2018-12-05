@@ -33,7 +33,6 @@ cp module/ssh_command.py /usr/share/my_modules/ <br/>
     username: "test"
     password: "test"
     command_interval: 0.5
-    vendor: GENERAL
     stdjudge: "Y/N"
     stdconfirm: "Y"
 
@@ -55,8 +54,8 @@ cp module/ssh_command.py /usr/share/my_modules/ <br/>
         password: "{{ password }}"
         address: "{{ item.mgtip }}"
         command_interval: "{{ command_interval }}"
-        stdjudge: "Y/N"
-        stdconfirm: "Y"
+        stdjudge: "{{ stdjudge }}"
+        stdconfirm: "{{ stdconfirm }}"
         command: ''
         configfile: "config/{{ item.hostname }}.txt"
       with_items:

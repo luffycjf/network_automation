@@ -8,7 +8,6 @@
     username: "test"
     password: "test"
     command_interval: 0.5
-    vendor: GENERAL
     stdjudge: "Y/N"
     stdconfirm: "Y"
 
