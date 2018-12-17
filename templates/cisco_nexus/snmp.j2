@@ -1,0 +1,18 @@
+configure terminal
+{% if snmp.community %}
+snmp-server community {{ snmp.community }} group network-operator
+
+{% if snmp.acl %}
+snmp-server community {{ snmp.community }} use-ipv4acl {{ snmp.acl }}
+{% endif %}
+{% endif %}
+{% for snmp_server in snmp.servers %}
+{% if snmp_server.address %}
+snmp-server host {{ snmp_server.address }} traps {% if snmp.version %}version {{ snmp.version }}{% endif %} {% if snmp_server.key %}{{ snmp_server.key }}{% endif %}
+
+{% if snmp_server.vrf %}
+snmp-server host {{ snmp_server.address }} use-vrf {{ snmp_server.vrf }}
+{% endif %}
+{% endif %}
+{% endfor %}
+end

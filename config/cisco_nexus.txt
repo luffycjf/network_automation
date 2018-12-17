@@ -1,0 +1,7 @@
+configure terminal
+snmp-server community test123 group network-operator
+
+snmp-server community test123 use-ipv4acl SNMP_ACL
+snmp-server host 1.1.1.1 traps version v2c test123
+snmp-server host 1.1.1.1 use-vrf mgt
+end

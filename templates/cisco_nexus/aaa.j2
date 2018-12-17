@@ -1,0 +1,43 @@
+configure terminal
+feature tacacs+
+{% for user in users %}
+{% if user.username and user.password %}
+username {{ user.username }} password {{ user.password }} role network-admin
+{% endif %}
+{% endfor %}
+{% for server_group in server_groups%}
+{% if server_group.source_interface[0] %}
+ip tacacs source-interface {{ server_group.source_interface[0] }}
+{% endif %}
+{% if server_group.address[0] %}
+tacacs-server host {{ server_group.address[0] }} {% if server_group.key[0] %}key {{ server_group.key[0] }}{% endif %}
+{% endif %}
+
+{% if server_group.address[1] %}
+tacacs-server host {{ server_group.address[1] }} {% if server_group.key[1] %}key {{ server_group.key[1] }}{% endif %}
+{% endif %}
+
+{% if server_group.name %}
+aaa group server tacacs+ {{ server_group.name }}
+{% if server_group.address[0] %}
+server {{ server_group.address[0] }}
+{% endif %}
+{% if server_group.address[1] %}
+server {{ server_group.address[1] }}
+{% endif %}
+{% if server_group.vrf[0] %}
+use-vrf {{ server_group.vrf[0] }}
+{% endif %}
+{% endif %}
+{% endfor %}
+{% if authentication_scheme %}
+aaa authentication login default group {{ authentication_scheme }} local
+{% endif %}
+{% if authorization_scheme %}
+aaa authorization commands default group {{ authorization_scheme }} local
+aaa authorization config-commands default group {{ authorization_scheme }} local
+{% endif %}
+{% if accounting_scheme %}
+aaa accounting default group {{ accounting_scheme }}
+{% endif %}
+end
