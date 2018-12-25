@@ -9,11 +9,11 @@ git clone https://github.com/luffycjf/network_automation
 **安装ansible和模块**<br/>
 
 ```javascript
-yum -y install ansible<br/>
-sed -i "s/#library/library/g" /etc/ansible/ansible.cfg<br/>
-mkdir -p /usr/share/my_modules/<br/>
-cd network_automation<br/>
-cp module/ssh_command.py /usr/share/my_modules/ <br/>
+yum -y install ansible
+sed -i "s/#library/library/g" /etc/ansible/ansible.cfg
+mkdir -p /usr/share/my_modules/
+cd network_automation
+cp module/ssh_command.py /usr/share/my_modules/
 ```
 如果已经安装了ansible，直接把module文件夹下的ssh_command.py放到ansible配置的模块目录下即可。<br/>
 
