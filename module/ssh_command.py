@@ -145,34 +145,34 @@ class ssh_comm(object):
 	output = self.shell.recv(4096)
 	while True:
 	    if hostname_endcondition.findall(output):
-		self.hostname = hostname_endcondition.findall(output)[0].strip().strip('<>[]#')
-		break
+            self.hostname = hostname_endcondition.findall(output)[0].strip().strip('<>[]#')
+            break
 	    while True:
-		time.sleep(0.1)
-		if self.shell.recv_ready() or self.shell.recv_stderr_ready():
-		    break
+            time.sleep(0.1)
+            if self.shell.recv_ready() or self.shell.recv_stderr_ready():
+                break
 	    output += self.shell.recv(4096)
     def recv_all(self,interval,stdjudge,stdconfirm):
-	endcondition = re.compile(r"%s[#>\]]\s*$"%self.hostname)
-	while True:
-	    time.sleep(interval)
-	    if self.shell.recv_ready() or self.shell.recv_stderr_ready():
-		break
-	output = self.shell.recv(4096)
-	if (stdjudge != '') and (stdjudge in output):
-	    self.shell.send(stdconfirm+'\n')
-	self.shell.send('\n')
-	while True:
-	    if stdmore.findall(output.split('\n')[-1]):
-		break
-	    elif endcondition.findall(output):
-		break
-	    while True:
-		time.sleep(interval)
-		if self.shell.recv_ready() or self.shell.recv_stderr_ready():
-		    break
-	    output += self.shell.recv(4096)
-	return output
+        endcondition = re.compile(r"%s[#>\]]\s*$"%self.hostname)
+        while True:
+            time.sleep(interval)
+            if self.shell.recv_ready() or self.shell.recv_stderr_ready():
+                break
+        output = self.shell.recv(4096)
+        if (stdjudge != '') and (stdjudge in output):
+            self.shell.send(stdconfirm+'\n')
+        self.shell.send('\n')
+        while True:
+            if stdmore.findall(output.split('\n')[-1]):
+                break
+            elif endcondition.findall(output):
+                break
+            while True:
+                time.sleep(interval)
+                if self.shell.recv_ready() or self.shell.recv_stderr_ready():
+                    break
+            output += self.shell.recv(4096)
+        return output
     def send_command(self,command_interval,command,stdjudge,stdconfirm):
         command += "\n"
         self.shell.send(command)
@@ -185,18 +185,18 @@ class ssh_comm(object):
             stdout += tmp
         return stdout
     def close(self):
-	if self.client is not None:
-	    self.client.close()
+        if self.client is not None:
+            self.client.close()
     def run(self,cmds,command_interval,stdjudge,stdconfirm):
-	stderr = ['^','ERROR','Error','error','invalid','Invalid','Ambiguous','ambiguous']
+        stderr = ['^','ERROR','Error','error','invalid','Invalid','Ambiguous','ambiguous']
         stdout = ''
         rc = 0
         for cmd in cmds.split('\n'):
-	    if cmd.strip():
-		stdout += self.send_command(command=cmd,command_interval=command_interval,stdjudge=stdjudge,stdconfirm=stdconfirm)
+            if cmd.strip():
+                stdout += self.send_command(command=cmd,command_interval=command_interval,stdjudge=stdjudge,stdconfirm=stdconfirm)
         for err in stderr:
             if err in stdout:
-		rc = 1
+                rc = 1
         return rc, stdout
             
             
