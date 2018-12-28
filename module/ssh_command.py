@@ -15,7 +15,7 @@ description:
 options:
   command:
     description:
-      - network devices command,if you use configfile , thi can be ''
+      - network devices command,if you use configfile , this can be ''
     required: true
   address:
     description:
@@ -55,6 +55,7 @@ options:
     default: ''
 author:
     - "jeffrycheng"
+
 '''
 
 EXAMPLES = """
@@ -127,9 +128,9 @@ hostname_endcondition = re.compile(r"\S+[#>\]]\s*$")
 
 
 try:
-  import paramiko
+    import paramiko
 except ImportError:
-  raise AnsibleError("paramiko is not installed, please use pip install paramiko")
+    raise AnsibleError("paramiko is not installed, please use pip install paramiko")
 
 
 class ssh_comm(object):
@@ -176,7 +177,16 @@ class ssh_comm(object):
     def send_command(self,command_interval,command,stdjudge,stdconfirm):
         command += "\n"
         self.shell.send(command)
-        stdout = self.recv_all(interval=command_interval,stdjudge=stdjudge,stdconfirm=stdconfirm)
+        stdout = ''
+        if ('hostname' in command) or ('sysname' in command):
+            while True:
+                time.sleep(0.5)
+                if self.shell.recv_ready() or self.shell.recv_stderr_ready():
+                    break
+            stdout = self.shell.recv(4096)
+            self.hostname = hostname_endcondition.findall(stdout)[-1].strip().strip('<>[]#')
+        else:
+            stdout = self.recv_all(interval=command_interval,stdjudge=stdjudge,stdconfirm=stdconfirm)
         data = stdout.split('\n')
         while stdmore.findall(data[-1]):
             self.shell.send(" ")
