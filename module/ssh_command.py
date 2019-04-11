@@ -144,6 +144,8 @@ class ssh_comm(object):
             if self.shell.recv_ready() or self.shell.recv_stderr_ready():
                 break
         output = self.shell.recv(4096)
+        self.shell.send('\n')
+        output = self.shell.recv(4096)
         while True:
             if hostname_endcondition.findall(output):
                 self.hostname = hostname_endcondition.findall(output)[0].strip().strip('<>[]#')
@@ -154,7 +156,7 @@ class ssh_comm(object):
                     break
             output += self.shell.recv(4096)
     def recv_all(self,interval,stdjudge,stdconfirm):
-        endcondition = re.compile(r"%s[#>\]]\s*$"%self.hostname)
+        endcondition = re.compile(r"%s\S*[#>\]]\s*$"%self.hostname)
         while True:
             time.sleep(interval)
             if self.shell.recv_ready() or self.shell.recv_stderr_ready():
